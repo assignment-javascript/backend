@@ -1,11 +1,19 @@
-const express = require('express')
-const app = express()
-const port = 3000
+// server.js
+const express = require('express');
+const app = express();
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+// View engine setup, if needed
+// app.set('view engine', 'ejs');
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+// Routers
+const accountRouter = require('./router/accountRouter');
+
+// Middleware setup, if needed
+app.use(express.json()); // to parse JSON bodies
+
+const port = 8080;
+app.listen(port, function() {
+    console.log('Listening on ' + port);
+});
+
+app.use('/', accountRouter);
