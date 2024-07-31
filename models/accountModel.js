@@ -11,29 +11,87 @@ connection.connect(err => {
   console.log('Connected to database.');
 });
 
-// const getAllUsers = (callback) => {
-//   const query = 'SELECT * FROM amount';
-//   connection.query(query, (error, rows) => {
-//     if (error) {
-//       callback(error, null);
-//       return;
-//     }
-//     callback(null, rows);
-//   });
-// };
 
-const getUsersByMonth = (month, callback) => {
-  const query = 'SELECT * FROM amount WHERE DATE_FORMAT(date_column, "%Y-%m") = ?';
-  connection.query(query, [month], (error, rows) => {
+//  "%Y-%m
+const getAccountByDate = (date, callback) => {
+  const query = 'SELECT * FROM amount WHERE DATE_FORMAT(date, "%Y-%m") = ?';
+
+  connection.query(query, [date], (error, data) => {
     if (error) {
       callback(error, null);
       return;
     }
-    callback(null, rows);
+    callback(null, data);
   });
 };
 
+const insertIncome = (date, bank, category, money, content, memo, ie, callback) => {
+  const query = `
+    INSERT INTO amount (date, bank, category, money, content, memo, ie)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  const values = [date, bank, category, money, content, memo, ie];
+
+  connection.query(query, values, (error, results) => {
+    if (error) {
+      callback(error, null);
+      return;
+    }
+    callback(null, results);
+  });
+};
+
+
+
+
+const getReportByDate = (date, callback) => {
+  // 쿼리문 1: 총 수입과 지출
+  const totalQuery = `
+    SELECT 
+      SUM(CASE WHEN ie = 'I' THEN money ELSE 0 END) AS total_income,
+      SUM(CASE WHEN ie = 'E' THEN money ELSE 0 END) AS total_expense,
+      SUM(CASE WHEN ie = 'I' THEN money ELSE 0 END) - SUM(CASE WHEN ie = 'E' THEN money ELSE 0 END) AS total_profit
+    FROM amount
+    WHERE DATE_FORMAT(date, "%Y-%m") = ?
+  `;
+
+  // 쿼리문 2: 각 카테고리별 지출
+  const categoryQuery = `
+    SELECT 
+      category,
+      SUM(money) AS total_expense
+    FROM amount
+    WHERE ie = 'E' AND DATE_FORMAT(date, "%Y-%m") = ?
+    GROUP BY category
+  `;
+
+  connection.query(totalQuery, [date], (error, totalResults) => {
+    if (error) {
+      callback(error, null);
+      return;
+    }
+
+    connection.query(categoryQuery, [date], (error, categoryResults) => {
+      if (error) {
+        callback(error, null);
+        return;
+      }
+
+      // 결과를 통합하여 반환
+      callback(null, {
+        date: date,
+        total: totalResults[0],
+        items: categoryResults
+      });
+    });
+  });
+};
+
+
 module.exports = {
   // getAllUsers,
-  getUsersByMonth
+  getAccountByDate,
+  insertIncome,
+  getReportByDate
 };
