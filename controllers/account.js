@@ -4,13 +4,13 @@ const router = express.Router();
 const userModel = require('../models/accountModel');
 
 router.post('/income', (req, res) => {
-  const { date , bank, category, money, content, memo, ie } = req.body;
+  const { date, bank, category, money, content, memo, ie } = req.body;
 
-  if (!date  || !bank || !category || !money || !content || !memo || !ie) {
+  if (!date || !bank || !category || !money || !content || !memo || !ie) {
     return res.status(400).json({ error: '빈 값이 존재합니다.' });
   }
 
-  userModel.insertIncome(date , bank, category, money, content, memo, ie, (error, results) => {
+  userModel.insertIncome(date, bank, category, money, content, memo, ie, (error, results) => {
     if (error) {
       console.error('Error inserting data: ', error);
       return res.status(500).json({ error: 'Database error occurred.' });
@@ -33,7 +33,7 @@ router.get('', (req, res) => {
       return;
     }
     console.log('User info for date', date, 'is: ', rows);
-    res.json( {message: 'Success', data : rows});
+    res.json({ message: 'Success', data: rows });
   });
 });
 
@@ -51,7 +51,7 @@ router.get('/report', (req, res) => {
       return;
     }
     console.log('report info for date', date, 'is: ', rows);
-    res.json( {message: 'Success',data: rows});
+    res.json({ message: 'Success', data: rows });
   });
 });
 
