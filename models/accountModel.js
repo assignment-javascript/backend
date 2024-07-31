@@ -1,5 +1,5 @@
 // models/userModel.js
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const dbconfig = require('../db/database.js');
 const connection = mysql.createConnection(dbconfig);
 
