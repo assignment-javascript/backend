@@ -13,10 +13,16 @@ connection.connect(err => {
 
 
 //  "%Y-%m
-const getAccountByDate = (date, callback) => {
-  const query = 'SELECT * FROM amount WHERE DATE_FORMAT(date, "%Y-%m") = ?';
+const getAccountByDate = (date, ie, callback) => {
+  let query = 'SELECT id, DATE_FORMAT(date, "%Y-%m-%d %H:%i:%s") AS date, bank, category, money, content, memo, ie FROM amount WHERE DATE_FORMAT(date, "%Y-%m") = ?';
+  let queryParams = [date];
 
-  connection.query(query, [date], (error, data) => {
+  if (ie) {
+    query += ' AND ie = ?';
+    queryParams.push(ie);
+  }
+
+  connection.query(query, queryParams, (error, data) => {
     if (error) {
       callback(error, null);
       return;
@@ -25,7 +31,10 @@ const getAccountByDate = (date, callback) => {
   });
 };
 
+
+
 const insertIncome = (date, bank, category, money, content, memo, ie, callback) => {
+  console.log(date)
   const query = `
     INSERT INTO amount (date, bank, category, money, content, memo, ie)
     VALUES (?, ?, ?, ?, ?, ?, ?)
