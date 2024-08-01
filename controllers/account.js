@@ -4,6 +4,7 @@ const router = express.Router();
 const userModel = require('../models/accountModel');
 
 router.post('/income', (req, res) => {
+  console.log(req.body)
   const { date, bank, category, money, content, memo, ie } = req.body;
 
   if (!date || !bank || !category || !money || !content || !memo || !ie) {
@@ -22,20 +23,24 @@ router.post('/income', (req, res) => {
 
 router.get('', (req, res) => {
   const date = req.query.date;
+  const ie = req.query.ie;
 
+  console.log("asdasdsadas",ie)
   if (!date) {
-    return res.status(400).send('Month query parameter is required');
+    return res.status(400).send('Date query parameter is required');
   }
-  userModel.getAccountByDate(date, (error, rows) => {
+
+  userModel.getAccountByDate(date, ie, (error, rows) => {
     if (error) {
       console.error('Error executing query: ', error);
       res.status(500).send('Server error');
       return;
     }
-    console.log('User info for date', date, 'is: ', rows);
+    console.log('amount info for date', date, 'is: ', rows);
     res.json({ message: 'Success', data: rows });
   });
 });
+
 
 
 router.get('/report', (req, res) => {
