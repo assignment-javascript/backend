@@ -25,7 +25,6 @@ router.get('', (req, res) => {
   const date = req.query.date;
   const ie = req.query.ie;
 
-  console.log("asdasdsadas",ie)
   if (!date) {
     return res.status(400).send('Date query parameter is required');
   }
