@@ -14,7 +14,7 @@ connection.connect(err => {
 
 //  "%Y-%m
 const getAccountByDate = (date, ie, callback) => {
-  let query = 'SELECT id, DATE_FORMAT(date, "%Y-%m-%d %H:%i:%s") AS date, bank, category, money, content, memo, ie FROM amount WHERE DATE_FORMAT(date, "%Y-%m") = ?';
+  let query = 'SELECT id, DATE_FORMAT(date, "%Y-%m-%d") AS date, bank, category, money, content, memo, ie FROM amount WHERE DATE_FORMAT(date, "%Y-%m") = ? order by date';
   let queryParams = [date];
 
   if (ie) {
