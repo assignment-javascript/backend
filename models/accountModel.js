@@ -14,14 +14,14 @@ connection.connect(err => {
 
 //  "%Y-%m
 const getAccountByDate = (date, ie, callback) => {
-  let query = 'SELECT id, DATE_FORMAT(date, "%Y-%m-%d") AS date, bank, category, money, content, memo, ie FROM amount WHERE DATE_FORMAT(date, "%Y-%m") = ? order by date';
+  let query = 'SELECT id, DATE_FORMAT(date, "%Y-%m-%d") AS date, bank, category, money, content, memo, ie FROM amount WHERE DATE_FORMAT(date, "%Y-%m") = ?';
   let queryParams = [date];
 
   if (ie) {
     query += ' AND ie = ?';
     queryParams.push(ie);
   }
-
+  query+='order by date';
   connection.query(query, queryParams, (error, data) => {
     if (error) {
       callback(error, null);

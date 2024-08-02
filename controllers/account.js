@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const userModel = require('../models/accountModel');
 
-router.post('/income', (req, res) => {
+router.post('', (req, res) => {
   console.log(req.body)
   const { date, bank, category, money, content, memo, ie } = req.body;
 
